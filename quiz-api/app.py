@@ -1,5 +1,6 @@
 from flask_cors import CORS
 from flask import Flask, request
+from jwt_utils import build_token
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +16,13 @@ def GetQuizInfo():
 
 @app.route('/login', methods=['POST'])
 def GetPassword():
-	payload = request.get_json(), 401
+	payload = request.get_json()
+	print(type(payload))
+	if payload["password"] == "flask2023":
+		token = build_token()
+		return {"token": token}, 200
+	else:
+		return {}, 401
 
 if __name__ == "__main__":
     app.run()
