@@ -1,6 +1,7 @@
 from flask_cors import CORS
 from flask import Flask, request
 from jwt_utils import build_token, decode_token
+from manageSQL import createQuestion, getQuestion
 
 app = Flask(__name__)
 CORS(app)
@@ -35,6 +36,9 @@ def postQuestion():
 		return 'Unauthorized', 401
 	
 	payload = request.get_json()
+	createQuestion(payload)
+	quest = getQuestion(payload)
+	print(quest.to_json())
 	return {"id": payload["position"]}, 200
 	
 
