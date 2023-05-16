@@ -36,11 +36,21 @@ def postQuestion():
 		return 'Unauthorized', 401
 	
 	payload = request.get_json()
+
 	createQuestion(payload)
-	quest = getQuestion(payload)
-	print(quest.to_json())
 	return {"id": payload["position"]}, 200
 	
+@app.route('/questions/<int:id>', methods=['GET'])
+def getQuestById(id):
+
+	question = getQuestion(id, True)
+
+	try:
+		question = getQuestion(id, True)
+	except:
+		return 'This question doesn\'t exist', 404
+	
+	return question.to_json(), 200
 
 if __name__ == "__main__":
     app.run()

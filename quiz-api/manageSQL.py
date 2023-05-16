@@ -20,25 +20,18 @@ def createQuestion(payload):
 	db_connection.commit()
 	db_connection.close()
 
-def getQuestion(payload):
+def getQuestion(parameter, isId):
 	db_connection = sqlite3.connect('./database.db', timeout=30)
 	db_connection.isolation_level = None
 	cur = db_connection.cursor()
+	paramStr = str(parameter)
 
-	cur.execute("SELECT * FROM QUESTIONS WHERE id = ?", (payload["position"],))
+	if isId:
+		cur.execute("SELECT * FROM QUESTIONS WHERE position = "+paramStr+"")
+	else:
+		cur.execute("SELECT * FROM QUESTIONS WHERE id = "+paramStr+"")
 
 	result = cur.fetchone()
-	question = Question(result[0], result[1], result[2], result[3])
-	return question 
+	db_connection.close()
+	return Question(result[0], result[1], result[2], result[3], result[4])
 	
-
-# save the question to db
-# insertion_result = cur.execute(
-# 	f"insert into Question (title) values"
-# 	f"('{input_question.title}')")
-
-# send the request
-#cur.execute("commit")
-
-# in case of exception, rollback the transaction
-#cur.execute('rollback')
