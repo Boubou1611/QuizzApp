@@ -1,12 +1,14 @@
 # Exemple de création de classe en python
+from json import dumps, loads
 class Question():
 	
-    def __init__(self, id, position, title, text, image):
+    def __init__(self, position, title, text, image, id, possibleAnswers):
         self.id = id
         self.position = position 
         self.title = title
         self.text = text 
         self.image = image
+        self.possibleAnswers = possibleAnswers
 
 
     def to_json(self):
@@ -15,7 +17,8 @@ class Question():
             'position': self.position,
             'title': self.title,
             'text': self.text,
-            'image': self.image
+            'image': self.image,
+            'possibleAnswers': loads(self.possibleAnswers)
         }
     
     def from_json(json_post):
@@ -24,7 +27,8 @@ class Question():
         title = json_post.get('title')
         text = json_post.get('text')
         image = json_post.get('image')
-        return Question(id=id, position=position, title=title, text=text, image=image)
+        possibleAnswers = dumps(json_post.get('possibleAnswers'))
+        return Question(id=id, position=position, title=title, text=text, image=image, possibleAnswers=possibleAnswers)
         
             
     

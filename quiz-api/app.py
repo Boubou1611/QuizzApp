@@ -43,10 +43,19 @@ def postQuestion():
 @app.route('/questions/<int:id>', methods=['GET'])
 def getQuestById(id):
 
-	question = getQuestion(id, True)
-
 	try:
 		question = getQuestion(id, True)
+	except:
+		return 'This question doesn\'t exist', 404
+	
+	return question.to_json(), 200
+
+@app.route('/questions', methods=['GET'])
+def getQuestByPosition():
+	position = request.args.get('position')
+
+	try:
+		question = getQuestion(position, False)
 	except:
 		return 'This question doesn\'t exist', 404
 	

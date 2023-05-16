@@ -1,6 +1,7 @@
 from flask import Flask, request
 import sqlite3
 from question import Question
+from json import dumps
 # create a connection
 db_connection = sqlite3.connect('./database.db')
 print(db_connection)
@@ -16,7 +17,8 @@ def createQuestion(payload):
 	db_connection.isolation_level = None
 	cur = db_connection.cursor()
 
-	cur.execute("INSERT INTO 'QUESTIONS' (position, title, text, image) VALUES (?, ?, ?, ?)", (payload["position"], payload["title"], payload["text"], payload["image"],))
+	cur.execute("INSERT INTO 'QUESTIONS' (position, title, text, image, possibleAnswers) VALUES (?, ?, ?, ?, ?)", 
+	     (payload["position"], payload["title"], payload["text"], payload["image"], dumps(payload["possibleAnswers"])))
 	db_connection.commit()
 	db_connection.close()
 
@@ -24,14 +26,13 @@ def getQuestion(parameter, isId):
 	db_connection = sqlite3.connect('./database.db', timeout=30)
 	db_connection.isolation_level = None
 	cur = db_connection.cursor()
-	paramStr = str(parameter)
 
 	if isId:
-		cur.execute("SELECT * FROM QUESTIONS WHERE position = "+paramStr+"")
+		cur.execute("SELECT * FROM QUESTIONS WHERE id = "+str(parameter)+"")
 	else:
-		cur.execute("SELECT * FROM QUESTIONS WHERE id = "+paramStr+"")
+		cur.execute("SELECT * FROM QUESTIONS WHERE position = "+parameter+"")
 
 	result = cur.fetchone()
 	db_connection.close()
-	return Question(result[0], result[1], result[2], result[3], result[4])
+	return Question(result[0], result[1], result[2], result[3], result[4], result[5])
 	
