@@ -2,18 +2,10 @@ from flask import Flask, request
 import sqlite3
 from question import Question
 from json import dumps
-# create a connection
-db_connection = sqlite3.connect('./database.db')
-print(db_connection)
 
-# set the sqlite connection in "manual transaction mode"
-# (by default, all execute calls are performed in their own transactions, not what we want)
-db_connection.isolation_level = None
 
-# start transaction
-# Ajouter un élément
 def createQuestion(payload):
-	db_connection = sqlite3.connect('./database.db', timeout=30)
+	db_connection = sqlite3.connect('./database.db')
 	db_connection.isolation_level = None
 	cur = db_connection.cursor()
 
@@ -23,7 +15,8 @@ def createQuestion(payload):
 	db_connection.close()
 
 def getQuestion(parameter, isId):
-	db_connection = sqlite3.connect('./database.db', timeout=30)
+
+	db_connection = sqlite3.connect('./database.db')
 	db_connection.isolation_level = None
 	cur = db_connection.cursor()
 
@@ -35,4 +28,51 @@ def getQuestion(parameter, isId):
 	result = cur.fetchone()
 	db_connection.close()
 	return Question(result[0], result[1], result[2], result[3], result[4], result[5])
+
+def deleteQuestion(id):
+
+	db_connection = sqlite3.connect('./database.db')
+	db_connection.isolation_level = None
+	cur = db_connection.cursor()
+	
+	cur.execute("DELETE FROM QUESTIONS WHERE id = ?", (id,))
+	deleted_rows = cur.rowcount
+	
+	db_connection.commit()
+	db_connection.close()
+
+	return deleted_rows != 0
+
+def deleteAll():
+	
+	db_connection = sqlite3.connect('./database.db')
+	db_connection.isolation_level = None
+	cur = db_connection.cursor()
+	
+	cur.execute("DELETE FROM QUESTIONS")
+	
+	db_connection.commit()
+	db_connection.close()
+
+def updateQuestion(id, payload):
+	
+	db_connection = sqlite3.connect('./database.db')
+	db_connection.isolation_level = None
+	cur = db_connection.cursor()
+	
+	cur.execute("""
+        UPDATE QUESTIONS 
+        SET position = ?, title = ?, text = ?, image = ?, possibleAnswers = ? 
+        WHERE id = ?""",
+        (payload["position"], payload["title"], payload["text"], 
+         payload["image"], dumps(payload["possibleAnswers"]), id))
+	
+	updated_questions = cur.rowcount
+	
+	db_connection.commit()
+	db_connection.close()
+
+	return updated_questions != 0
+
+	
 	
