@@ -13,7 +13,8 @@ def hello_world():
 
 @app.route('/quiz-info', methods=['GET'])
 def GetQuizInfo():
-	return {"size": 0, "scores": []}, 200
+	size, participations = getQuizSizeAndScore()
+	return {"size": size, "scores": participations}, 200
 
 @app.route('/login', methods=['POST'])
 def GetPassword():
@@ -23,6 +24,14 @@ def GetPassword():
 		return {"token": token}, 200
 	else:
 		return {}, 401
+
+@app.route('/rebuild-db', methods=['POST'])
+def rebuildDb():
+
+	rebuildDatabase()
+
+	return "Ok", 200
+
 
 @app.route('/questions', methods=['POST'])
 def postQuestion():
@@ -65,13 +74,18 @@ def deleteQuestionById(id):
 		authorize_request(request)
 	except:
 		return 'Unauthorized', 401
-			
-	row_deleted = deleteQuestion(id)
-
-	if row_deleted:
-		return {}, 204
-	else:
+	
+	try:
+		row_deleted = deleteQuestion(id)
+	except:
 		return 'This question doesn\'t exist', 404
+	
+	return {}, 204
+
+	# if row_deleted:
+	# 	return {}, 204
+	# else:
+	# 	return 'This question doesn\'t exist', 404
 	
 @app.route('/questions/all', methods=['DELETE'])
 def deleteAllQuestions():
@@ -81,24 +95,47 @@ def deleteAllQuestions():
 	except:
 		return 'Unauthorized', 401
 
-	deleteAll()
+	deleteAllQuest()
 
 	return {}, 204
 
 @app.route('/questions/<int:id>', methods=['PUT'])
 def updateQuestionById(id):
-	# try:
-	# 	authorize_request(request)
-	# except:
-	# 	return 'Unauthorized', 401
 
 	payload = request.get_json()
-	row_deleted = updateQuestion(id, payload)
-
-	if row_deleted:
-		return {}, 204
-	else:
+	try:
+		row_deleted = updateQuestion(id, payload)
+	except:
 		return 'This question doesn\'t exist', 404
+	
+	return {}, 204
+
+	# if row_deleted:
+	# 	return {}, 204
+	# else:
+	# 	return 'This question doesn\'t exist', 404
+	
+@app.route('/participations/all', methods=['DELETE'])
+def deleteAllParticipations():
+    
+    try:
+        authorize_request(request)
+    except:
+        return 'Unauthorized', 401
+    
+    deleteAllPart()
+    return {}, 204
+
+@app.route('/participations', methods=['POST'])
+def postParticipation():
+    
+    paylod = request.get_json()
+    try :
+        score = addParticipation(paylod)
+    except :
+        return 'Bad Request', 400
+
+    return {"playerName":paylod["playerName"],"score":score}, 200
 
 
 def authorize_request(request):
