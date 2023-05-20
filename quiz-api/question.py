@@ -30,18 +30,4 @@ class Question():
         possibleAnswers = dumps(json_post.get('possibleAnswers'))
         return Question(id=id, position=position, title=title, text=text, image=image, possibleAnswers=possibleAnswers)
         
-
-class Participation():
-
-    def __init__(self, id, name, score):
-        self.id = id
-        self.name = name 
-        self.score = score
-
-    def to_json(self):
-        return {
-            'id' : self.id,
-            'name': self.name,
-            'score': self.score,
-        } 
     

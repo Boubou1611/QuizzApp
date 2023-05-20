@@ -23,7 +23,7 @@ def GetPassword():
 		token = build_token()
 		return {"token": token}, 200
 	else:
-		return {}, 401
+		return {"error": "Incorrect password"}, 401
 
 @app.route('/rebuild-db', methods=['POST'])
 def rebuildDb():
@@ -130,8 +130,21 @@ def deleteAllParticipations():
 def postParticipation():
     
     paylod = request.get_json()
+    
     try :
         score = addParticipation(paylod)
+    except :
+        return 'Bad Request', 400
+
+    return {"playerName":paylod["playerName"],"score":score}, 200
+
+@app.route('/participations', methods=['GET'])
+def getParticipation(playerName):
+    
+    paylod = request.get_json()
+    
+    try :
+        score = getParticipation(playerName)
     except :
         return 'Bad Request', 400
 

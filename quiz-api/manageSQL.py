@@ -2,6 +2,8 @@ from flask import Flask, request
 import sqlite3
 from question import Question
 from json import dumps, loads
+from datetime import datetime
+
 
 
 def rebuildDatabase():
@@ -16,9 +18,12 @@ def rebuildDatabase():
         CREATE TABLE PARTICIPATIONS (
             id INTEGER PRIMARY KEY,
             playerName TEXT NOT NULL,
-            score INTEGER NOT NULL
+            score INTEGER NOT NULL,	    	
+			date TEXT
         )
     """)
+	
+	db_connection.commit()
 
 	cur.execute("""
         CREATE TABLE QUESTIONS (
@@ -43,10 +48,10 @@ def getQuizSizeAndScore():
 	cur.execute("SELECT COUNT(*) FROM QUESTIONS")
 	count = cur.fetchone()[0]
 
-	cur.execute("SELECT id, playerName, score FROM PARTICIPATIONS ORDER BY score DESC")
+	cur.execute("SELECT id, playerName, score, date FROM PARTICIPATIONS ORDER BY score DESC")
 
 	rows = cur.fetchall()
-	column_names = ["id", "playerName", "score"]
+	column_names = ["id", "playerName", "score", "date"]
 	json_data = [dict(zip(column_names, row)) for row in rows]
         
     # Close the connection
@@ -174,6 +179,7 @@ def addParticipation(paylod) :
     cur = db_connection.cursor()
 
     score = 0
+    current_date  = datetime.now().strftime('%Y-%m-%d')
 
     for index, answer in enumerate(paylod["answers"]):
         question = cur.execute("SELECT * FROM QUESTIONS WHERE position = ?", (index + 1,)).fetchone()
@@ -191,8 +197,8 @@ def addParticipation(paylod) :
 
         if selected_answer["isCorrect"]:
             score += 1
-
-    cur.execute("INSERT INTO PARTICIPATIONS (playerName, score) VALUES (?, ?)",(paylod["playerName"], score))
+	    
+    cur.execute("INSERT INTO PARTICIPATIONS (playerName, score, date) VALUES (?, ?, ?)",(paylod["playerName"], score, current_date))
     
     db_connection.commit()
     db_connection.close()
