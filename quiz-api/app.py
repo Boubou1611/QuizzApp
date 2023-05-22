@@ -67,9 +67,21 @@ def getQuestByPosition():
 	
 	return question.to_json(), 200
 
+@app.route('/questions/all', methods=["GET"])
+def getAllQuest():
+	
+	try:
+		listOfQuest = getAllQuestions()
+	except:
+		return {}, 404
+	
+	print(listOfQuest)
+	return listOfQuest, 200
+
+
 @app.route('/questions/<int:id>', methods=['DELETE'])
 def deleteQuestionById(id):
-
+	
 	try:
 		authorize_request(request)
 	except:
@@ -89,7 +101,6 @@ def deleteQuestionById(id):
 	
 @app.route('/questions/all', methods=['DELETE'])
 def deleteAllQuestions():
-
 	try:
 		authorize_request(request)
 	except:

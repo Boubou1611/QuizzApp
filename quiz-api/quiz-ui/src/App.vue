@@ -18,8 +18,21 @@ import { RouterLink, RouterView } from "vue-router";
 <style scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  position: fixed;
+  width: 100%; /* Makes the header span the full width of the screen */
+  z-index: 1;
+  background-color: #32174d;
+  display: flex; /* added to make header a flex container */
+  justify-content: flex-start; /* align items to the left */
+  align-items: center; /* added to center the content vertically */
+  height: 55px; /* you can adjust this to fit your design */
 }
+
+.content {
+  margin-top: 2rem;
+}
+
+/* Rest of your styles */
 
 .logo {
   display: block;
@@ -27,10 +40,8 @@ header {
 }
 
 nav {
-  width: 100%;
+  width: auto; /* change to auto to allow centering */
   font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
 }
 
 nav a.router-link-exact-active {
@@ -53,8 +64,6 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
-    place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
 
@@ -63,18 +72,18 @@ nav a:first-of-type {
   }
 
   header .wrapper {
-    display: flex;
-    place-items: flex-start;
     flex-wrap: wrap;
   }
 
   nav {
-    text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-
     padding: 1rem 0;
     margin-top: 1rem;
+  }
+
+  .content {
+    margin-top: 4rem;
   }
 }
 </style>

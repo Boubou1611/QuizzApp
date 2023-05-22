@@ -19,6 +19,7 @@
 
 <script>
 import quizApiService from "@/services/QuizApiService";
+import participationStorageService from "@/services/ParticipationStorageService";
 
 export default {
   data() {
@@ -35,6 +36,7 @@ export default {
           // Password is correct, you can now use the token
           console.log(response);
           console.log("Received token: ", response.data.token);
+          participationStorageService.saveToken(response.data.token);
           this.$router.push("/admin");
         } else if (response.status === 401) {
           console.error(response.data.error);

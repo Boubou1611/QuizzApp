@@ -121,6 +121,23 @@ def deleteAllQuest():
 	db_connection.commit()
 	db_connection.close()
 
+def getAllQuestions():
+
+	db_connection = sqlite3.connect('./database.db')
+	cur = db_connection.cursor()
+	cur.execute("SELECT * FROM QUESTIONS")
+
+	rows = cur.fetchall()
+	keys = [description[0] for description in cur.description]
+
+	result = []
+	for row in rows:
+		result.append(dict(zip(keys, row)))
+
+	db_connection.close()
+    
+	return dumps(result)
+
 def updateQuestion(id, payload):
 	
 	db_connection = sqlite3.connect('./database.db')

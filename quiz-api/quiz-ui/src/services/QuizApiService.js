@@ -44,4 +44,17 @@ export default {
   getPassword(parameterPassword) {
     return this.call("post", "login", { password: parameterPassword });
   },
+  getAllQuestion() {
+    return this.call("get", "questions/all");
+  },
+  createQuestion(payload, token) {
+    return this.call("post", "questions", payload, token);
+  },
+  updateQuestion(id, payload) {
+    return this.call("put", `questions/${id}`, payload);
+  },
+  deleteQuestion(id, token) {
+    console.log(token);
+    return this.call("delete", `questions/${id}`, null, token);
+  },
 };
