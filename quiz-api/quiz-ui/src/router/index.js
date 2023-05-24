@@ -25,7 +25,7 @@ const router = createRouter({
       component: () => import("../views/QuestionManager.vue"),
     },
     {
-      path: "/your-score/:score",
+      path: "/your-score",
       name: "PersonnalScore",
       component: () => import("../views/PersonnalScore.vue"),
     },

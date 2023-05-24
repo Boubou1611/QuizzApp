@@ -61,20 +61,20 @@ def getQuizSizeAndScore():
 
 
 def createQuestion(payload):
-	db_connection = sqlite3.connect('./database.db')
-	db_connection.isolation_level = None
-	cur = db_connection.cursor()
+    db_connection = sqlite3.connect('./database.db')
+    db_connection.isolation_level = None
+    cur = db_connection.cursor()
         
-	cur.execute("SELECT id FROM QUESTIONS WHERE position >= ?", (payload["position"],))
-	rows = cur.fetchall()
-	for row in rows:
-		cur.execute("UPDATE QUESTIONS SET position = position + 1 WHERE id = ?", (row[0],))
+    cur.execute("SELECT id FROM QUESTIONS WHERE position = ?", (payload["position"],))
+    rows = cur.fetchall()
+    if rows:  # if there are any questions with the same position
+        cur.execute("UPDATE QUESTIONS SET position = position + 1 WHERE position >= ?", (payload["position"],))
 
-	cur.execute("INSERT INTO 'QUESTIONS' (position, title, text, image, possibleAnswers) VALUES (?, ?, ?, ?, ?)", 
-	     (payload["position"], payload["title"], payload["text"], payload["image"], dumps(payload["possibleAnswers"])))    
-        
-	db_connection.commit()
-	db_connection.close()
+    cur.execute("INSERT INTO 'QUESTIONS' (position, title, text, image, possibleAnswers) VALUES (?, ?, ?, ?, ?)", 
+         (payload["position"], payload["title"], payload["text"], payload["image"], dumps(payload["possibleAnswers"])))    
+    
+    db_connection.commit()
+    db_connection.close()
 
 def getQuestion(parameter, isId):
 
@@ -186,23 +186,24 @@ def deleteAllPart() :
     db_connection.commit()
     db_connection.close()
 
-def addParticipation(paylod) :
-    
-    if len(paylod["answers"]) != 10:
-        raise ValueError("Bad Request. Le nombre de réponses est incorrect.")
+def addParticipation(payload) :
+	
 
     db_connection = sqlite3.connect('./database.db')
+    if len(payload["answers"]) != 10:assert False 
     db_connection.isolation_level = None
     cur = db_connection.cursor()
 
     score = 0
     current_date  = datetime.now().strftime('%Y-%m-%d')
-
-    for index, answer in enumerate(paylod["answers"]):
-        question = cur.execute("SELECT * FROM QUESTIONS WHERE position = ?", (index + 1,)).fetchone()
+    print(payload["answers"])
+	
+    for index, answer in enumerate(payload["answers"]):
+        question = cur.execute("SELECT * FROM QUESTIONS WHERE position = ?", (index + 1,)).fetchone()	
         if not question:
             db_connection.close()
-            raise ValueError("La question {} n'a pas été trouvée.".format(index + 1))
+            raise ValueError("La question {} n'a pas été trouvée.".format(index + 1,))
+	
 
         possible_answers = loads(question[5])
 
@@ -215,7 +216,7 @@ def addParticipation(paylod) :
         if selected_answer["isCorrect"]:
             score += 1
 	    
-    cur.execute("INSERT INTO PARTICIPATIONS (playerName, score, date) VALUES (?, ?, ?)",(paylod["playerName"], score, current_date))
+    cur.execute("INSERT INTO PARTICIPATIONS (playerName, score, date) VALUES (?, ?, ?)",(payload["playerName"], score, current_date))
     
     db_connection.commit()
     db_connection.close()

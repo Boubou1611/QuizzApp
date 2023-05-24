@@ -48,13 +48,14 @@ export default {
       //   index
       // );
       participationStorageService.addToParticipationScore(index + 1);
-      this.currentQuestionPosition++;
-      if (this.currentQuestionPosition <= this.totalNumberOfQuestion) {
+      if (this.currentQuestionPosition < this.totalNumberOfQuestion) {
+        this.currentQuestionPosition++;
         await this.loadQuestionByPosition(this.currentQuestionPosition);
       } else {
         this.endQuiz();
       }
-      console.log(this.currentQuestion);
+      console.log(this.currentQuestionPosition);
+      console.log(this.totalNumberOfQuestion);
     },
     async endQuiz() {
       let payload = {
@@ -65,13 +66,19 @@ export default {
       let yourScore = await quizApiService.getQuizInfo();
       let scoresData = yourScore.data.scores;
 
-      let playerObj = scoresData.find(
+      let playersWithSameName = scoresData.filter(
         (player) => player.playerName === payload.playerName
       );
 
+      let playerObj = playersWithSameName.reduce((prev, current) => {
+        return prev.id > current.id ? prev : current;
+      });
+
+      participationStorageService.savePlayerScore(playerObj.score);
+      console.log(playerObj.score);
+      console.log(payload);
       this.$router.push({
         name: "PersonnalScore",
-        query: { score: playerObj.score, name: playerObj.playerName },
       });
     },
     checkAnswer(possibleAnswers, index) {

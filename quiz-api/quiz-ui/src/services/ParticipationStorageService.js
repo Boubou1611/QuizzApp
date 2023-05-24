@@ -8,11 +8,26 @@ export default {
   getPlayerName() {
     return window.localStorage.getItem("playerName");
   },
+  removePlayerName() {
+    window.localStorage.removeItem("playerName");
+  },
   saveToken(token) {
     window.localStorage.setItem("token", token);
   },
   getToken() {
     return window.localStorage.getItem("token");
+  },
+  removeToken() {
+    window.localStorage.removeItem("token");
+  },
+  savePlayerScore(score) {
+    window.localStorage.setItem("score", score);
+  },
+  getPlayerScore() {
+    return window.localStorage.getItem("score");
+  },
+  removePlayerScore() {
+    window.localStorage.removeItem("score");
   },
   saveParticipationScore() {
     window.localStorage.setItem("participationScore", JSON.stringify([]));

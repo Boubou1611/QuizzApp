@@ -63,26 +63,52 @@ export default {
 </script>
 
 <style scoped>
-/* Add the style you want for the component */
+.admin-display {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #fff;
+  background: #32174d;
+}
+
+.admin-display img {
+  max-height: 380px;
+  height: auto;
+}
+
+.admin-display h2,
+.admin-display h3 {
+  text-align: center;
+}
+
+.admin-display a {
+  color: #fff;
+  text-decoration: none;
+}
+
 .btn {
   display: inline-block;
   padding: 10px 20px;
   margin: 10px;
-  border: 2px solid green;
+  border: 2px solid #fff;
   border-radius: 15px;
-  background-color: white;
-  color: green;
+  background-color: rgba(224, 176, 255, 0.8);
+  color: #fff;
   text-decoration: none;
-  transition: background-color 0.5s, color 0.5s; /* fade effect */
+  transition: background-color 0.5s, color 0.5s;
 }
 
 .btn:hover {
-  background-color: green;
-  color: white;
+  background-color: #747b81;
+  color: #fff;
 }
 
 .buttons {
   display: flex;
   justify-content: space-between;
+  width: 50%;
 }
 </style>

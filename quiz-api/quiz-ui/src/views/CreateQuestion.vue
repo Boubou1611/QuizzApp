@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="admin-edit">
     <div>
       <label>Position:</label>
       <input v-model="position" type="text" />
@@ -12,30 +12,31 @@
       <label>Text:</label>
       <input v-model="text" type="text" />
     </div>
-    <div v-for="(answer, index) in answers" :key="index">
+    <div v-for="(answer, index) in answers" :key="index" class="form-group">
       <input
         type="checkbox"
         :disabled="selectedAnswer !== null && selectedAnswer !== index"
         @change="handleCheckboxChange(index)"
       />
-      <label>Answer {{ index + 1 }}:</label>
+      <label>Réponse {{ index + 1 }}:</label>
       <input v-model="answers[index]" type="text" />
     </div>
     <div>
-      <label for="image">Choose an image:</label>
+      <div class="image-container">
+        <img v-if="imageData" :src="imageData" class="image-preview" />
+      </div>
       <input
         type="file"
         id="image"
         accept="image/*"
         @change="handleImageChange"
       />
-      <img v-if="imageData" :src="imageData" />
     </div>
     <button @click="createQuestion" :disabled="!isFormValid">
       Create Question
     </button>
     <router-link to="/admin">
-      <button class="back-button">← Go Back</button>
+      <button class="back-button">← Annuler</button>
     </router-link>
   </div>
 </template>
@@ -103,6 +104,7 @@ export default {
       let log = await quizApiService.createQuestion(payload, token);
       if (log.status == 200) {
         alert("La question a bien été enregistré");
+        this.$router.push("/admin");
       } else {
         alert("ALERTE: la question ne s'est pas enregistré");
       }
@@ -133,11 +135,91 @@ export default {
 </script>
 
 <style scoped>
-.back-button {
+.admin-edit {
+  margin-top: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #32174d;
+  color: #fff;
+  padding: 20px;
+}
+
+.admin-edit label {
+  color: #fff;
+}
+
+.admin-edit input[type="text"],
+.admin-edit input[type="file"] {
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px 0;
   border: none;
-  background-color: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.admin-edit img {
+  max-height: 380px;
+  height: auto;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px; /* adjust as needed */
+  height: 300px; /* adjust as needed */
+  border-radius: 50%;
+  overflow: hidden; /* this will make the image fit into the rounded box */
+  margin: 10px auto; /* center the box */
+  background-color: #fff; /* or any color you like */
+  border: 2px solid #fff; /* or any color you like */
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* this will make the image cover the whole area of the box */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5em 1em;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  background-color: rgba(224, 176, 255, 1);
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #747b81;
+}
+
+button {
+  border: 2px solid #fff;
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 15px;
+  margin-top: 20px;
   cursor: pointer;
-  font-size: 18px;
-  color: green;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 </style>

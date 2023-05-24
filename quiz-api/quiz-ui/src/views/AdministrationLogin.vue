@@ -1,18 +1,22 @@
 <template>
-  <div class="container">
-    <form @submit.prevent="submitForm">
+  <div class="container d-flex justify-content-center">
+    <form @submit.prevent="submitForm" class="w-20">
       <div class="mb-3">
-        <p class="form-label">Mot de passe</p>
+        <label for="playerName" class="form-label">Mot de passe</label>
         <input
-          type="text"
+          type="password"
           class="form-control"
           id="playerName"
           placeholder="Entrez le mot de passe"
           v-model="password"
         />
       </div>
-      <button class="btn btn-primary" @click="launchLogin">Soumettre</button>
-      <p class="form-label">{{ warning }}</p>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-primary custom-button" @click="launchLogin">
+          Soumettre
+        </button>
+      </div>
+      <p class="form-label warning">{{ warning }}</p>
     </form>
   </div>
 </template>
@@ -49,11 +53,26 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+.container {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.custom-button {
+  background-color: rgba(224, 176, 255, 1);
+  color: #ffffff;
+}
+
+.custom-button:hover {
+  background-color: #747b81;
+  color: #ffffff;
+}
+
+.warning {
+  color: red;
+  font-weight: bold;
 }
 </style>

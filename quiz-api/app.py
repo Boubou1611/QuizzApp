@@ -141,7 +141,6 @@ def deleteAllParticipations():
 def postParticipation():
     
     paylod = request.get_json()
-    
     try :
         score = addParticipation(paylod)
     except :
